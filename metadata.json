@@ -1,0 +1,6 @@
+{
+  "name": "NEXORA AI - Your Personal AI Career Recommendation Engine",
+  "description": "Discover your ideal career path with NEXORA AI, featuring personalized roadmaps, skill matching, and tailored learning resources.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
