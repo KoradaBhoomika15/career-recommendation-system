@@ -11,11 +11,12 @@ import { SavedPage } from './components/pages/SavedPage';
 import { ProfilePage } from './components/pages/ProfilePage';
 import { AboutPage } from './components/pages/AboutPage';
 import { AuthModal } from './components/pages/AuthModal';
+import { AuthGateway } from './components/pages/AuthGateway';
 
 const AppContent: React.FC = () => {
   const { currentUser } = useAuth();
 
-  const [currentTab, setCurrentTab] = useState<string>('landing');
+  const [currentTab, setCurrentTab] = useState<string>('dashboard');
   const [selectedCareerRoadmapId, setSelectedCareerRoadmapId] = useState<string>('ai-ml-engineer');
   const [selectedDiscoverCategory, setSelectedDiscoverCategory] = useState<string>('all');
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
@@ -32,6 +33,7 @@ const AppContent: React.FC = () => {
     } else {
       setCurrentTab('dashboard');
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleExploreCareer = (careerId: string) => {
@@ -75,72 +77,78 @@ const AppContent: React.FC = () => {
 
       {/* Main Page View Router */}
       <main className="flex-1 w-full relative z-10">
-        {currentTab === 'landing' && (
-          <LandingPage
-            onGetStarted={handleGetStarted}
-            onExploreCareer={handleExploreCareer}
-            onSelectCategory={handleSelectCategory}
-          />
-        )}
+        {!currentUser ? (
+          <AuthGateway onAuthSuccess={handleAuthSuccess} />
+        ) : (
+          <>
+            {currentTab === 'landing' && (
+              <LandingPage
+                onGetStarted={handleGetStarted}
+                onExploreCareer={handleExploreCareer}
+                onSelectCategory={handleSelectCategory}
+              />
+            )}
 
-        {currentTab === 'onboarding' && (
-          <OnboardingPage
-            onComplete={() => {
-              setCurrentTab('dashboard');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-        )}
+            {currentTab === 'onboarding' && (
+              <OnboardingPage
+                onComplete={() => {
+                  setCurrentTab('dashboard');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            )}
 
-        {currentTab === 'dashboard' && (
-          <DashboardPage
-            onExploreCareer={handleExploreCareer}
-            onEditProfile={() => {
-              setCurrentTab('profile');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-        )}
+            {currentTab === 'dashboard' && (
+              <DashboardPage
+                onExploreCareer={handleExploreCareer}
+                onEditProfile={() => {
+                  setCurrentTab('profile');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            )}
 
-        {currentTab === 'roadmap' && (
-          <RoadmapPage
-            initialCareerId={selectedCareerRoadmapId}
-            onSelectCareer={(id) => setSelectedCareerRoadmapId(id)}
-          />
-        )}
+            {currentTab === 'roadmap' && (
+              <RoadmapPage
+                initialCareerId={selectedCareerRoadmapId}
+                onSelectCareer={(id) => setSelectedCareerRoadmapId(id)}
+              />
+            )}
 
-        {currentTab === 'discover' && (
-          <DiscoverPage
-            initialCategory={selectedDiscoverCategory}
-            onExploreCareer={handleExploreCareer}
-          />
-        )}
+            {currentTab === 'discover' && (
+              <DiscoverPage
+                initialCategory={selectedDiscoverCategory}
+                onExploreCareer={handleExploreCareer}
+              />
+            )}
 
-        {currentTab === 'saved' && (
-          <SavedPage
-            onExploreCareer={handleExploreCareer}
-            onBrowseLibrary={() => {
-              setSelectedDiscoverCategory('all');
-              setCurrentTab('discover');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-        )}
+            {currentTab === 'saved' && (
+              <SavedPage
+                onExploreCareer={handleExploreCareer}
+                onBrowseLibrary={() => {
+                  setSelectedDiscoverCategory('all');
+                  setCurrentTab('discover');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            )}
 
-        {currentTab === 'profile' && (
-          <ProfilePage
-            onGoToDashboard={() => {
-              setCurrentTab('dashboard');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onExploreCareer={handleExploreCareer}
-          />
-        )}
+            {currentTab === 'profile' && (
+              <ProfilePage
+                onGoToDashboard={() => {
+                  setCurrentTab('dashboard');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onExploreCareer={handleExploreCareer}
+              />
+            )}
 
-        {currentTab === 'about' && <AboutPage />}
+            {currentTab === 'about' && <AboutPage />}
+          </>
+        )}
       </main>
 
-      {/* Auth Modal (Sign In / Sign Up) */}
+      {/* Auth Modal (for switching or re-authenticating) */}
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}

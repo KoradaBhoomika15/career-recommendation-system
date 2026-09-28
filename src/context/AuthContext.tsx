@@ -55,7 +55,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [users, setUsers] = useState<User[]>(() => {
     try {
       const saved = localStorage.getItem(USERS_STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
+      if (saved) return JSON.parse(saved);
+      // Pre-seed demo account in registered users pool
+      const demoSeedUser: User = {
+        id: 'user-demo-1',
+        name: 'Aarav Sharma',
+        email: 'aarav.sharma@nexora.ai',
+        password: 'demo123',
+        profile: defaultDemoProfile,
+        createdAt: new Date().toISOString()
+      };
+      return [demoSeedUser];
     } catch {
       return [];
     }
@@ -65,16 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const active = localStorage.getItem(CURRENT_USER_KEY);
       if (active) return JSON.parse(active);
-
-      // Pre-seed demo user so user has an immediate delightful landing/dashboard experience
-      const demoUser: User = {
-        id: 'user-demo-1',
-        name: 'Aarav Sharma',
-        email: 'aarav.sharma@nexora.ai',
-        profile: defaultDemoProfile,
-        createdAt: new Date().toISOString()
-      };
-      return demoUser;
+      return null;
     } catch {
       return null;
     }

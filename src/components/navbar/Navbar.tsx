@@ -40,7 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   const handleNavClick = (tabId: string, requiresAuth?: boolean) => {
-    if (requiresAuth && !currentUser) {
+    if (!currentUser) {
       onOpenAuth('signin');
       setMobileMenuOpen(false);
       return;
@@ -55,7 +55,13 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
         <button
-          onClick={() => handleNavClick('landing')}
+          onClick={() => {
+            if (currentUser) {
+              setCurrentTab('landing');
+            } else {
+              onOpenAuth('signin');
+            }
+          }}
           className="flex items-center gap-2.5 text-left group focus:outline-none"
         >
           <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-sky-500 to-indigo-500 shadow-md shadow-cyan-500/25 group-hover:shadow-cyan-400/40 transition-all duration-300">
